@@ -6,7 +6,6 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <meta http-equiv="refresh" content="0; url=https://wellness-actively-staff-privacy.trycloudflare.com">
   <title>SAMIAN (เสมียนดิจิทัล) - กำลังเข้าสู่ระบบ...</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -92,8 +91,36 @@
     }
   </style>
   <script>
-    // Direct JavaScript redirect
-    window.location.replace("https://wellness-actively-staff-privacy.trycloudflare.com");
+    const fallbackTarget = "https://janet-tables-wherever-cancer.trycloudflare.com";
+    const owner = "comsurasihospital";
+    const repo = "SAMIAN";
+
+    async function redirectNow() {
+      // 1. Fetch real-time active URL from GitHub API (instantaneous 0.1s update, bypassing CDN build delay)
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 1800);
+        const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/tunnel.txt?t=${Date.now()}`, {
+          headers: { "Accept": "application/vnd.github.v3.raw" },
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+          const liveUrl = (await res.text()).trim();
+          if (liveUrl.startsWith("https://") && liveUrl.includes("trycloudflare.com")) {
+            window.location.replace(liveUrl);
+            return;
+          }
+        }
+      } catch (err) {}
+
+      // 2. Fallback to static target
+      if (fallbackTarget && fallbackTarget.startsWith("https://") && !fallbackTarget.includes("__")) {
+        window.location.replace(fallbackTarget);
+      }
+    }
+
+    redirectNow();
   </script>
 </head>
 <body>
@@ -104,10 +131,21 @@
     </div>
     <h1>SAMIAN (เสมียนดิจิทัล)</h1>
     <p>ระบบสารบรรณอิเล็กทรอนิกส์ & วิเคราะห์ยกร่างหนังสือราชการ<br>กำลังนำท่านเข้าสู่ระบบอัตโนมัติ...</p>
-    <a href="https://wellness-actively-staff-privacy.trycloudflare.com" class="btn">กดที่นี่เพื่อเข้าสู่ระบบทันที &rarr;</a>
+    <a id="btnGo" href="https://janet-tables-wherever-cancer.trycloudflare.com" class="btn">กดที่นี่เพื่อเข้าสู่ระบบทันที &rarr;</a>
     <div class="meta">
-      อัปเดตล่าสุด: 2026-10-21 16:21:32
+      อัปเดตล่าสุด: 2026-10-21 16:28:12
     </div>
   </div>
+  <script>
+    // Update button href dynamically as well
+    fetch(`https://api.github.com/repos/${owner}/${repo}/contents/tunnel.txt?t=${Date.now()}`, {
+      headers: { "Accept": "application/vnd.github.v3.raw" }
+    }).then(r => r.text()).then(url => {
+      url = url.trim();
+      if (url.startsWith("https://")) {
+        document.getElementById("btnGo").href = url;
+      }
+    }).catch(() => {});
+  </script>
 </body>
 </html>
